@@ -1,0 +1,264 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+ * Width of the header, the view-as banner and the page content, which must stay aligned.
+ * The old fixed 72rem left (viewport - 72rem) / 2 of empty space on each side. This halves that
+ * space at every width: content width = viewport / 2 + 552px (plus the 24px padding on each
+ * side), and it is simply the full width wherever the window is narrower than that.
+ */
+@utility page-width {
+  max-width: calc(50% + 600px);
+}
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * One easing for every transition and animation on the site: cubic-bezier(0.5, 0, 0, 1).
+ * `transition-*` utilities read the theme default; the enter/exit animations of the menus,
+ * popovers and dialogs (tw-animate-css) read --tw-ease, which is not inherited, so it is set on
+ * every element. The spinner keeps its own linear timing: an eased spinner would stutter.
+ * src/lib/motion.ts holds the same curve for animations started from code.
+ */
+@theme {
+  --default-transition-timing-function: cubic-bezier(0.5, 0, 0, 1);
+}
+*,
+::before,
+::after {
+  --tw-ease: cubic-bezier(0.5, 0, 0, 1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-attention: var(--attention);
+  --color-attention-foreground: var(--attention-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-shared: var(--shared);
+  --color-shared-foreground: var(--shared-foreground);
+  --color-linked: var(--linked);
+  --color-linked-foreground: var(--linked-foreground);
+  --color-team: var(--team);
+  --color-team-foreground: var(--team-foreground);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.488 0.217 264);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.48 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  /* Outlines of inputs and filters: about 3:1 against white, for controls that must be seen. */
+  --input: oklch(0.66 0 0);
+  --ring: oklch(0.488 0.217 264);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+  --attention: oklch(0.96 0.05 85);
+  --attention-foreground: oklch(0.42 0.09 60);
+  --success: oklch(0.96 0.03 150);
+  --success-foreground: oklch(0.4 0.09 150);
+  /* Orange, for a survey short of answers: something to redo, not something late (red). */
+  --warning: oklch(0.95 0.045 50);
+  --warning-foreground: oklch(0.47 0.13 45);
+  /* Three colors of their own, used nowhere else: the shared-module button (a module several
+     classes share, violet), the same-survey button (modules answered in one survey, teal) and the
+     intervenants button (several people teach one module, rose). */
+  --shared: oklch(0.955 0.035 300);
+  --shared-foreground: oklch(0.4 0.15 300);
+  --linked: oklch(0.955 0.035 195);
+  --linked-foreground: oklch(0.4 0.085 195);
+  --team: oklch(0.955 0.035 350);
+  --team-foreground: oklch(0.42 0.14 350);
+}
+
+.dark {
+  --background: oklch(0.16 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.2 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.22 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.7 0.15 262);
+  --primary-foreground: oklch(0.16 0.02 262);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.72 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.7 0.15 262);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+  --attention: oklch(0.3 0.06 75);
+  --attention-foreground: oklch(0.88 0.11 85);
+  --success: oklch(0.28 0.05 155);
+  --success-foreground: oklch(0.86 0.1 155);
+  --warning: oklch(0.3 0.07 50);
+  --warning-foreground: oklch(0.84 0.12 55);
+  --shared: oklch(0.3 0.07 300);
+  --shared-foreground: oklch(0.87 0.1 300);
+  --linked: oklch(0.28 0.05 195);
+  --linked-foreground: oklch(0.86 0.09 195);
+  --team: oklch(0.3 0.07 350);
+  --team-foreground: oklch(0.87 0.1 350);
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+/* While the theme is being switched, nothing eases from the old colors to the new ones. */
+.theme-switching,
+.theme-switching *,
+.theme-switching ::before,
+.theme-switching ::after {
+  transition: none !important;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+    color-scheme: light;
+    font-feature-settings: "cv11", "ss01";
+  }
+  :focus-visible {
+    @apply outline-ring outline-2 outline-offset-2;
+  }
+}
+
+/*
+ * The pointer cursor on everything that can be clicked. Tailwind's reset gives buttons the default
+ * arrow, and the menu and select items of the component library set `cursor-default` themselves, so
+ * this rule is outside the layers (it wins over both) and kept at zero specificity with :where().
+ * Disabled controls go back to the arrow.
+ */
+:where(
+  button:not(:disabled),
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"],
+  [role="menuitemradio"],
+  [role="menuitemcheckbox"],
+  [role="option"],
+  [role="switch"],
+  [role="checkbox"],
+  [role="radio"],
+  [role="combobox"],
+  a[href],
+  summary,
+  select,
+  label[for],
+  label:has(input[type="checkbox"]),
+  label:has(input[type="radio"]),
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="submit"],
+  input[type="button"],
+  input[type="file"]
+) {
+  cursor: pointer;
+}
+
+:disabled,
+[data-disabled],
+[aria-disabled="true"] {
+  cursor: default;
+}
+
+/*
+ * On phones the signed-in area has a tab bar fixed to the bottom (3.5 rem, plus the home-indicator
+ * safe area). Whatever else sits at the bottom of the screen (the back-to-top button, the toasts,
+ * the end of the page) starts above it through this variable; it is 0 everywhere else.
+ */
+@media (max-width: 767px) {
+  :root:has(#app-bottom-nav) {
+    --app-tabbar-h: calc(3.5rem + env(safe-area-inset-bottom));
+  }
+}

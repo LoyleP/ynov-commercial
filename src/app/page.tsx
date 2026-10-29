@@ -5,8 +5,7 @@ import { FunnelChart } from "@/components/dashboard/funnel-chart";
 import { KpiCard } from "@/components/dashboard/kpi-card";
 import { TrendChart } from "@/components/dashboard/trend-chart";
 import { EmptyState } from "@/components/empty-state";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { formatDateLong } from "@/lib/format";
+import { formatRange } from "@/lib/format";
 import { parseFilters } from "@/lib/leads/filters";
 import { MOCK_LEADS } from "@/lib/leads/mock";
 import { computeDashboard } from "@/lib/leads/stats";
@@ -16,30 +15,18 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
   const filters = parseFilters(await searchParams);
   const data = computeDashboard(MOCK_LEADS, filters);
   const { kpis } = data;
-  const previousYear = filters.year - 1;
+  const compareLabel = data.compareRange ? formatRange(data.compareRange) : null;
 
   return (
     <>
-      <header className="border-b">
-        <div className="page-width mx-auto flex h-14 w-full items-center justify-between px-4 sm:px-6 lg:px-10">
-          <span className="font-semibold">{fr.app.name}</span>
-          <ThemeToggle />
-        </div>
-      </header>
-      <main className="page-width mx-auto w-full flex-1 space-y-6 px-4 py-8 sm:px-6 lg:px-10">
-        <div className="space-y-1">
+      <main className="page-width mx-auto w-full flex-1 space-y-6 px-6 py-8 sm:px-12 lg:px-24">
+        <div>
           <h1 id="dashboard-title" className="text-2xl font-semibold">
             {fr.dashboard.title}
           </h1>
-          <p id="dashboard-intro" className="text-muted-foreground text-sm">
-            {fr.dashboard.intro} {fr.dashboard.mockNotice}
-          </p>
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <div className="space-y-2">
           <FilterBar filters={filters} />
-          <p id="dashboard-until" className="text-muted-foreground text-xs">
-            {fr.dashboard.until(formatDateLong(data.until))}
-          </p>
         </div>
         {kpis.leads.value === 0 ? (
           <EmptyState
@@ -54,37 +41,37 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
                 id="leads"
                 label={fr.dashboard.kpis.leads}
                 kpi={kpis.leads}
-                previousYear={previousYear}
+                compareLabel={compareLabel}
               />
               <KpiCard
                 id="interviews"
                 label={fr.dashboard.kpis.interviews}
                 kpi={kpis.interviews}
-                previousYear={previousYear}
+                compareLabel={compareLabel}
               />
               <KpiCard
                 id="enrolled"
                 label={fr.dashboard.kpis.enrolled}
                 kpi={kpis.enrolled}
-                previousYear={previousYear}
+                compareLabel={compareLabel}
               />
               <KpiCard
                 id="rate"
                 label={fr.dashboard.kpis.rate}
                 kpi={kpis.rate}
                 asRate
-                previousYear={previousYear}
+                compareLabel={compareLabel}
               />
             </section>
             <section id="dashboard-overview" className="grid gap-4 lg:grid-cols-5">
               <div className="lg:col-span-3">
                 <TrendChart
                   trend={data.trend}
-                  year={filters.year}
+                  granularity={data.granularity}
                   hasPrevious={kpis.leads.previous !== null}
                 />
               </div>
-              <div className="lg:col-span-2">
+              <div className="lg:col-span-2 [&>*]:h-full">
                 <FunnelChart funnel={data.funnel} />
               </div>
             </section>
